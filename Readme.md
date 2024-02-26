@@ -31,16 +31,18 @@ manera local
 entidades si no que se mapean a dtos para mantener separadas las responsabilidades de la apliación
 
 
+## --English version:
 # Backend tech interview trial from SDG Group
  Exercise made by Israel Fernández Agudo
 
 * The statement has been resolved as the recruiters asked for. I built an Api Rest using information from an external
 Api (https://restcountries.com/). My Application connects with a local database and retrieves the information in
 json format.
-* 
+
+
 # Tech used
 
-### Lenguaje Java con el framework Springboot
+### Java language alongside Springboot Framework
 I used the next dependencies with Maven:
 
 * Mysql Connector
