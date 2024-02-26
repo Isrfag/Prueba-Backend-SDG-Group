@@ -28,29 +28,17 @@ public class CountryController {
     }
 
     //ENDPOINT POST
-
     @PostMapping
     public ResponseEntity<CountryDto> createUpdateCountry (@RequestBody CountryDto countryDto) {
-
         //Convertimos el dto en entity con nuestro mapper
         CountryEntity countryEntity = countryMapper.mapFrom(countryDto);
+        countryService.save(countryEntity);
 
-        //Comprobamos si el dato ya existe para actualizarlo usando la Id
-        if (countryService.existInDb(countryDto.getId())) {
-
-            //Aseguramos que tenga la misma id y ahora se sobreescribe.
-            countryEntity.setId(countryDto.getId());
-            countryService.save(countryEntity);
-            return new ResponseEntity<>(HttpStatus.ACCEPTED);
-
+        //Comprobamos si el dato ya existe para actualizarlo usando la Id para devolver el estatus
+        if (!countryService.existInDb(countryEntity.getId())) {
+            return new ResponseEntity<>(countryMapper.mapTo(countryEntity), HttpStatus.CREATED);
         }else {
-
-            //Guardamos el objeto en la base de datos y lo recuperamos para pasarlo a dto
-            CountryEntity savedCountryEntity = countryService.save(countryEntity);
-            savedCountryEntity.setId(1);
-            System.out.println(savedCountryEntity.getId());
-
-            return new ResponseEntity<>(countryMapper.mapTo(savedCountryEntity), HttpStatus.CREATED);
+            return new ResponseEntity<>(countryMapper.mapTo(countryEntity), HttpStatus.ACCEPTED);
         }
 
     }
@@ -60,7 +48,7 @@ public class CountryController {
     public ResponseEntity<List<CountryDto>> getAllCountries () {
 
         //Si la base de datos esta vacía la rellenamos usando la Api Rest proporcionada
-        ResponseEntity<List<CountryDto>> response = fillDbService.fillDataBase();
+        ResponseEntity response = fillDbService.fillDataBase();
 
         List<CountryDto> countryDtosList = countryService.getCountries().stream().map(countryMapper::mapTo).toList();
         return new ResponseEntity<>(countryDtosList,response.getStatusCode());

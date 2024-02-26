@@ -46,33 +46,27 @@ public class FillDbServiceImpl implements FillDbService {
     private String pathUrl;
     @Override
     public ResponseEntity fillDataBase() {
-        List<String > countryNames = new ArrayList<>();
-
-        List<CountryRaw> countryListRaw = getCountriesRawsFromJson();
-
-        if(countryListRaw==null) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        }else {
-
-            for (CountryRaw c : countryListRaw) {
-
-                countryNames.add(c.getName().getCommon());
-            }
-
-            List<CountryDto> countryDtosList = countryListRaw.stream().map(rawMapper::mapFrom).toList();
-
-
-            for (int i = 0; i < 250; i++) {
-                countryDtosList.get(i).setCountry(countryNames.get(i));
-            }
-
-            List<CountryEntity> countryEntityList = countryDtosList.stream().map(countryMapper::mapFrom).toList();
-
             //Comprobamos si la base de datos esta vacía, si lo esta la rellenamos con el json
             if (countryService.isDbEmpty()!=0){
                 return new ResponseEntity<>(HttpStatus.OK);
+
             }else {
+                List<CountryRaw> countryListRaw = getCountriesRawsFromJson();
+                if(countryListRaw==null) {
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+                }else {
+
+                    List<CountryDto> countryDtosList = countryListRaw.stream().map(rawMapper::mapFrom).toList();
+
+                    for (int i =0; i < countryListRaw.size();i++) {
+
+                        //countryNames.add(c.getName().getCommon());
+                        countryDtosList.get(i).setCountry(countryListRaw.get(i).getName().getCommon());
+                    }
+
+                    List<CountryEntity> countryEntityList = countryDtosList.stream().map(countryMapper::mapFrom).toList();
+
                 sendToDataBase(countryEntityList);
                 return new ResponseEntity<>(HttpStatus.CREATED);
             }
