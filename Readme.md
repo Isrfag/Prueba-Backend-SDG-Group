@@ -21,7 +21,7 @@ He utilizado las siguientes dependecias con Maven:
 La base de datos usada es relacional con el gestor MySql y ejecutada de
 manera local
 
-### Caracaterísticas de la Apliación
+### Caracaterísticas de la Aplicación
 
 * Consulta a la base de datos y en caso de estar vacía conecta con https://restcountries.com/ y la relle
 na de países
